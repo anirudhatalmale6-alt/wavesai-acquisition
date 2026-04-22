@@ -1815,14 +1815,24 @@ window.addEventListener('scroll', () => {
 <script>
 var vapiInstance = null;
 var isCallActive = false;
+var vapiSDKLoaded = false;
 
 function loadVapiSDK() {
-    return new Promise((resolve) => {
-        if (window.Vapi) { resolve(); return; }
+    return new Promise((resolve, reject) => {
+        if (vapiSDKLoaded) { resolve(); return; }
         const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
-        s.onload = () => resolve();
+        s.type = 'module';
+        s.textContent = `
+            import Vapi from 'https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/+esm';
+            window.VapiSDK = Vapi;
+            window.dispatchEvent(new Event('vapi-loaded'));
+        `;
+        window.addEventListener('vapi-loaded', () => {
+            vapiSDKLoaded = true;
+            resolve();
+        }, { once: true });
         document.head.appendChild(s);
+        setTimeout(() => reject(new Error('SDK load timeout')), 10000);
     });
 }
 
@@ -1841,24 +1851,42 @@ async function toggleVoiceDemo() {
     }
 
     btnText.textContent = 'Connecting...';
-    await loadVapiSDK();
 
-    vapiInstance = new window.Vapi('fc4171f6-d929-4c0f-8552-5160e5066617');
-    vapiInstance.start('6076d1f2-e365-4a30-838f-c1f0104acee6');
+    try {
+        await loadVapiSDK();
 
-    vapiInstance.on('call-start', () => {
-        isCallActive = true;
-        btnText.textContent = 'End Call';
-        btn.classList.add('active');
-        pulse.style.display = 'block';
-    });
+        if (!vapiInstance) {
+            vapiInstance = new window.VapiSDK('fc4171f6-d929-4c0f-8552-5160e5066617');
 
-    vapiInstance.on('call-end', () => {
-        isCallActive = false;
+            vapiInstance.on('call-start', () => {
+                isCallActive = true;
+                btnText.textContent = 'End Call';
+                btn.classList.add('active');
+                pulse.style.display = 'block';
+            });
+
+            vapiInstance.on('call-end', () => {
+                isCallActive = false;
+                btnText.textContent = 'Try Voice AI';
+                btn.classList.remove('active');
+                pulse.style.display = 'none';
+            });
+
+            vapiInstance.on('error', (e) => {
+                console.error('Vapi error:', e);
+                isCallActive = false;
+                btnText.textContent = 'Try Voice AI';
+                btn.classList.remove('active');
+                pulse.style.display = 'none';
+            });
+        }
+
+        await vapiInstance.start('6076d1f2-e365-4a30-838f-c1f0104acee6');
+    } catch (err) {
+        console.error('Voice demo error:', err);
         btnText.textContent = 'Try Voice AI';
         btn.classList.remove('active');
-        pulse.style.display = 'none';
-    });
+    }
 }
 </script>
 
