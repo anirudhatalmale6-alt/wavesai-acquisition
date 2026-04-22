@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  plan      String   @default("STARTER")
+  isActive  Boolean  @default(true)
+  brandName String?
+  brandLogo String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users          User[]
+  assistants     VoiceAssistant[]
+  phoneNumbers   PhoneNumber[]
+  callLogs       CallLog[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("CLIENT_ADMIN")
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+}
+
+model VoiceAssistant {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id])
+  name            String
+  vapiAssistantId String?
+  systemPrompt    String
+  firstMessage    String?
+  voiceId         String   @default("Elliot")
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  phoneNumbers PhoneNumber[]
+  callLogs     CallLog[]
+
+  @@index([tenantId])
+}
+
+model PhoneNumber {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  number      String   @unique
+  twilioSid   String?
+  assistantId String?
+  assistant   VoiceAssistant? @relation(fields: [assistantId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId])
+}
+
+model CallLog {
+  id           String    @id @default(cuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id])
+  assistantId  String?
+  assistant    VoiceAssistant? @relation(fields: [assistantId], references: [id])
+  vapiCallId   String?   @unique
+  callerNumber String?
+  direction    String    @default("inbound")
+  status       String    @default("pending")
+  duration     Int?
+  summary      String?
+  recordingUrl String?
+  startedAt    DateTime?
+  endedAt      DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([tenantId])
+  @@index([assistantId])
+}
