@@ -1810,5 +1810,121 @@ window.addEventListener('scroll', () => {
     }
 });
 </script>
+
+<!-- Vapi Web Widget - Try Voice AI Demo -->
+<script>
+var vapiInstance = null;
+var isCallActive = false;
+
+function loadVapiSDK() {
+    return new Promise((resolve) => {
+        if (window.Vapi) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/gh/VapiAI/html-script-tag@latest/dist/assets/index.js';
+        s.onload = () => resolve();
+        document.head.appendChild(s);
+    });
+}
+
+async function toggleVoiceDemo() {
+    const btn = document.getElementById('voice-demo-btn');
+    const btnText = document.getElementById('voice-demo-text');
+    const pulse = document.getElementById('voice-demo-pulse');
+
+    if (isCallActive) {
+        if (vapiInstance) vapiInstance.stop();
+        isCallActive = false;
+        btnText.textContent = 'Try Voice AI';
+        btn.classList.remove('active');
+        pulse.style.display = 'none';
+        return;
+    }
+
+    btnText.textContent = 'Connecting...';
+    await loadVapiSDK();
+
+    vapiInstance = new window.Vapi('fc4171f6-d929-4c0f-8552-5160e5066617');
+    vapiInstance.start('6076d1f2-e365-4a30-838f-c1f0104acee6');
+
+    vapiInstance.on('call-start', () => {
+        isCallActive = true;
+        btnText.textContent = 'End Call';
+        btn.classList.add('active');
+        pulse.style.display = 'block';
+    });
+
+    vapiInstance.on('call-end', () => {
+        isCallActive = false;
+        btnText.textContent = 'Try Voice AI';
+        btn.classList.remove('active');
+        pulse.style.display = 'none';
+    });
+}
+</script>
+
+<style>
+#voice-demo-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #7ec8e3 0%, #4a9ab5 100%);
+    color: #0b1219;
+    border: none;
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 24px rgba(126, 200, 227, 0.3);
+    transition: all 0.3s;
+}
+
+#voice-demo-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(126, 200, 227, 0.4);
+}
+
+#voice-demo-btn.active {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 24px rgba(239, 68, 68, 0.3);
+}
+
+#voice-demo-btn.active:hover {
+    box-shadow: 0 8px 32px rgba(239, 68, 68, 0.4);
+}
+
+#voice-demo-pulse {
+    display: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #0b1219;
+    animation: vPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes vPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+#voice-demo-btn svg {
+    width: 20px;
+    height: 20px;
+}
+</style>
+
+<button id="voice-demo-btn" onclick="toggleVoiceDemo()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+    </svg>
+    <span id="voice-demo-text">Try Voice AI</span>
+    <span id="voice-demo-pulse"></span>
+</button>
+
 </body>
 </html>
