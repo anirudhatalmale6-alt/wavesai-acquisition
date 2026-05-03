@@ -54,6 +54,15 @@ export default async function DashboardLayout({
             Call Logs
           </Link>
           <Link
+            href="/dashboard/bookings"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Bookings
+          </Link>
+          <Link
             href="/dashboard/widgets"
             className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
           >
@@ -61,6 +70,47 @@ export default async function DashboardLayout({
               <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
             Embed Widget
+          </Link>
+
+          <div className="mt-4 mb-2 px-4">
+            <p className="text-xs text-[#a2d9ed]/20 uppercase tracking-wider font-semibold">More Systems</p>
+          </div>
+          <Link
+            href="/dashboard/leads"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Lead Gen
+          </Link>
+          <Link
+            href="/dashboard/seo"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            SEO Content
+          </Link>
+          <Link
+            href="/dashboard/embedded-seo"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+            </svg>
+            Embedded SEO
+          </Link>
+          <Link
+            href="/dashboard/ads"
+            className="flex items-center gap-3 px-4 py-3 text-sm text-[#a2d9ed]/70 hover:text-white hover:bg-[rgba(120,200,220,0.06)] rounded-lg transition mb-1"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+              <path d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+            </svg>
+            Ad Copy
           </Link>
         </nav>
 
